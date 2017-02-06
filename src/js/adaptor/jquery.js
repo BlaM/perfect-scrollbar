@@ -4,6 +4,10 @@ var ps = require('../main');
 var psInstances = require('../plugin/instances');
 
 function mountJQuery(jQuery) {
+  if (typeof jQuery !== 'function' || typeof jQuery.fn !== 'object' || typeof jQuery.fn.jquery !== 'string') {
+    return false;
+  }
+
   jQuery.fn.perfectScrollbar = function (settingOrCommand) {
     return this.each(function () {
       if (typeof settingOrCommand === 'object' ||
@@ -26,16 +30,15 @@ function mountJQuery(jQuery) {
       }
     });
   };
+
+  return true;
 }
 
 if (typeof define === 'function' && define.amd) {
   // AMD. Register as an anonymous module.
   define(['jquery'], mountJQuery);
 } else {
-  var jq = window.jQuery ? window.jQuery : window.$;
-  if (typeof jq !== 'undefined') {
-    mountJQuery(jq);
-  }
+  mountJQuery(window.jQuery || window.$);
 }
 
 module.exports = mountJQuery;
